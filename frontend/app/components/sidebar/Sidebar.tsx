@@ -27,7 +27,7 @@ const Sidebar: React.FC = () => {
 			>
 				<div className="h-full px-3 py-4 overflow-y-auto">
 					<ul className="space-y-2 font-medium">
-						<Image src="/images/KubeLogo.enc" alt="Kube Logo" width={230} height={230} className="rounded-md" priority={true}/>
+						<Image src="/images/KubeLogo.png" alt="Kube Logo" width={230} height={230} className="rounded-md" priority={true}/>
 
 						<SidebarElement icon={Boxicons.Dashboard} label="Home - devOnly" page="/" />
 						<SidebarElement icon={Boxicons.Dashboard} label="Mijn kanaal" page="/channel" />
