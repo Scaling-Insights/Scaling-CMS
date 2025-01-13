@@ -1,6 +1,10 @@
-// src/database/data-source.ts
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
+import { User } from 'src/shared/entities/user.entity';
+import { Tag } from 'src/shared/entities/tag.entity';
+import { Content } from 'src/shared/entities/content.entity';
+import { ContentTag } from 'src/shared/entities/content-tag.entity';
+import { Short } from 'src/shared/entities/short.entity';
 import { ConfigService } from '@nestjs/config';
 
 const configService = new ConfigService();
@@ -11,8 +15,7 @@ export const AppDataSource = new DataSource({
   username: configService.get<string>('DB_USER'),
   password: configService.get<string>('DB_PASSWORD'),
   database: configService.get<string>('DB_DATABASE'),
-  entities: [__dirname + "/../**/*.entity.{ts,js}"],
-  migrations: [__dirname + "/migrations/*.{ts,js}"],
-  synchronize: false,
-  logging: true,
+  entities: [User, Tag, Content, ContentTag, Short],
+  synchronize: true,
+  logging: false,
 });

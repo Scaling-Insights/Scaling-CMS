@@ -60,8 +60,7 @@ export const setAxiosInterceptors = () => {
                         const csrfToken = getCsrfTokenFromJwt(accessToken);
                         config.headers['CSRF-Token'] = csrfToken;
                     }
-                } else {
-                    console.log("No JWT token found");
+
                 }
                 return config;
             });

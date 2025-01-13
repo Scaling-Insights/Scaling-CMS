@@ -19,6 +19,7 @@ import ContentItem from "@/app/components/channel/ContentItem";
 //     { title: "titel", description: "beschrijving", tags: ["tag1", "tag2", "tag3", "tag4"], createdAt: new Date(Date.now()), publicationStatus: "public", thumbnailLink: "" },
 // ];
 
+
 export default function Channel() {
     const [isLoading, setIsLoading] = useState(true);
     const [usedContent, setUsedContent] = useState([]);
@@ -32,39 +33,66 @@ export default function Channel() {
     const ITEMS_PER_PAGE = Number(process.env.NEXT_PUBLIC_MY_CHANNEL_MAX_CONTENT_ITEMS);
 
     // Fetch content from the API
-    const getContent = async (rangeMin: number, rangeMax: number, page: number) => {
+    // const getContent = async (rangeMin: number, rangeMax: number, page: number) => {
+    //     setIsLoading(true);
+
+    //     const getContentDTO = { rangeMin, rangeMax };
+
+    //     const { response, data } = await postData(process.env.NEXT_PUBLIC_CONTENT_GET_URL, getContentDTO, false);
+
+    //     if (response !== 201 || !data["contents"]?.contents) {
+    //         console.error("Failed to fetch content:", data);
+    //         setIsLoading(false);
+    //         return;
+    //     }
+
+    //     const fetchedContent = data["contents"].contents || [];
+    //     const totalItemsCount = data["rangeSize"] || 0;
+
+    //     setTotalItems(totalItemsCount);
+    //     setTotalPages(Math.ceil(totalItemsCount / ITEMS_PER_PAGE));
+
+    //     updatePageContent(page, fetchedContent);
+    //     setIsLoading(false);
+    // };
+
+    const getContent = () => {
         setIsLoading(true);
 
-        const getContentDTO = { rangeMin, rangeMax };
+        const contents = [
+            { title: "titel die best wel lang is maar dat is oke want hij kapt hem mooi af", description: "beschrijving", tags: ["tag1", "tag2", "tag3"], createdAt: new Date(Date.UTC(2024, 8, 12)), publicationStatus: "public", thumbnailLink: "https://images.unsplash.com/photo-1543051932-6ef9fecfbc80?q=80&w=1924&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+            { title: "titel", description: "beschrijving", tags: ["tag1", "tag2", "tag3"], createdAt: new Date(Date.UTC(2024, 8, 12)), publicationStatus: "public", thumbnailLink: "https://images.unsplash.com/photo-1516690553959-71a414d6b9b6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+            { title: "titel", description: "beschrijving kan echt heel lang worden dit is natuurlijk super cool maar ik heb helemaal geen zn om zo veeeeeeeeeel te typen, dat is toch een drama.", tags: ["tag1"], createdAt: new Date(Date.now()), publicationStatus: "private", thumbnailLink: "https://images.unsplash.com/photo-1506792006437-256b665541e2?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" },
+            { title: "titel", description: "", tags: ["tag1", "tag2"], createdAt: new Date(Date.UTC(2024, 8, 12)), publicationStatus: "public", thumbnailLink: "" },
+            { title: "", description: "beschrijving", tags: [], createdAt: new Date(Date.UTC(2024, 8, 12)), publicationStatus: "public", thumbnailLink: "" },
+            { title: "titel", description: "beschrijving", tags: ["tag1", "tag2", "tag3", "tag4"], createdAt: new Date(Date.now()), publicationStatus: "public", thumbnailLink: "" },
+            { title: "titel", description: "beschrijving", tags: ["tag1", "tag2", "tag3", "tag4"], createdAt: new Date(Date.now()), publicationStatus: "public", thumbnailLink: "" },
+            { title: "titel", description: "beschrijving", tags: ["tag1", "tag2", "tag3", "tag4"], createdAt: new Date(Date.UTC(2024, 8, 12)), publicationStatus: "public", thumbnailLink: "" },
+            { title: "titel", description: "beschrijving", tags: ["tag1", "tag2", "tag3", "tag4"], createdAt: new Date(Date.now()), publicationStatus: "public", thumbnailLink: "" },
+        ];
 
-        const { response, data } = await postData(process.env.NEXT_PUBLIC_CONTENT_GET_URL, getContentDTO, false);
-
-        if (response !== 201 || !data["contents"]?.contents) {
-            console.error("Failed to fetch content:", data);
-            setIsLoading(false);
-            return;
+        const data = {
+            contents: contents, 
+            rangeSize: contents.length 
         }
 
-        const fetchedContent = data["contents"].contents || [];
+        const fetchedContent = data["contents"] || [];
         const totalItemsCount = data["rangeSize"] || 0;
 
-        setTotalItems(totalItemsCount);
-        setTotalPages(Math.ceil(totalItemsCount / ITEMS_PER_PAGE));
+        setTimeout(() => {
+            setTotalItems(totalItemsCount);
+            setTotalPages(Math.ceil(totalItemsCount / ITEMS_PER_PAGE));
 
-        updatePageContent(page, fetchedContent);
-        setIsLoading(false);
-    };
+            updatePageContent(0, fetchedContent);
+            setIsLoading(false);
+        }, 30);
+    }
 
     const updatePageContent = (page: number, fullContent: any[]) => {
         const start = (page - 1) * ITEMS_PER_PAGE;
         const end = start + fullContent.length;
 
-        if(fullContent.length != 0) {   
-            setStartItem(start + 1);
-        } else {
-            setStartItem(start);
-        }
-
+        setStartItem(start + 1);
         setEndItem(end);
         setUsedContent(fullContent);
     };
@@ -77,13 +105,14 @@ export default function Channel() {
         const rangeMin = (newPage - 1) * ITEMS_PER_PAGE;
         const rangeMax = Math.min(rangeMin + ITEMS_PER_PAGE, totalItems);
 
-        await getContent(rangeMin, rangeMax - 1, newPage);
+        // await getContent(rangeMin, rangeMax - 1, newPage);
     };
 
     useEffect(() => {
         const rangeMin = 0;
         const rangeMax = ITEMS_PER_PAGE - 1;
-        getContent(rangeMin, rangeMax, 1);
+        // getContent(rangeMin, rangeMax, 1);
+        getContent();
     }, []);
 
     return (
@@ -112,8 +141,8 @@ export default function Channel() {
                             Er is nog geen content beschikbaar
                         </p>
                     ) : (
-                        usedContent.map((Item, index) => (
-                            <ContentItem key={`${Item.id}-${index}`} {...Item} />
+                        usedContent.map((Item) => (
+                            <ContentItem key={Item.id} {...Item} />
                         ))
                     )}
 

@@ -1,19 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Short } from 'src/shared/entities/short.entity';
 import { MissingFieldException } from 'src/common/exceptions/missing-field.exception';
 import { InvalidShortDurationException } from 'src/common/exceptions/content/short/invalid-short-duration.exception';
 import { SnowflakeService } from 'src/modules/snowflake/snowflake.service';
-import { IShortService } from './short.service.interface';
+import { MockShortRepository } from './mocks/short.repository.mock';
 
 @Injectable()
-export class ShortService implements IShortService{
+export class ShortService {
   constructor(
-    @InjectRepository(Short)
-    private readonly shortRepository: Repository<Short>,
+    @Inject('ShortRepository')
+    private shortRepository: MockShortRepository,
     private readonly snowflakeService: SnowflakeService,
-  ) { }
+  ) {}
 
   validateShort(short: Short): void {
     const requiredFields = ['videoLength', 'streamUID'];

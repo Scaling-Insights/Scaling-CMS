@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Tag } from 'src/shared/entities/tag.entity';
-import { ITagService } from './tag.service.interface';
+import { MockTagRepository } from './mocks/tag.repository.mock';
 
 @Injectable()
-export class TagService implements ITagService {
+export class TagService {
   constructor(
-    @InjectRepository(Tag)
-    private readonly tagRepository: Repository<Tag>,
+    @Inject('TagRepository')
+    private tagRepository: MockTagRepository,
   ) {}
 
   async createTag(tagName: string): Promise<Tag> {

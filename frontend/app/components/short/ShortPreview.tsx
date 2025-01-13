@@ -19,15 +19,8 @@ const ShortPreview: React.FC<ShortPreviewProps> = (props) => {
         if (videoRef.current) {
             const handleLoadedMetadata = () => {
                 const video = videoRef.current!;
-                if(video) {
-                    if(video.videoHeight && video.videoWidth) {
-                        const ratio = video.videoHeight / video.videoWidth;
-                        setAspectRatio(ratio); // Update aspect ratio or fallback to 9:16
-    
-                    } else {
-                        setAspectRatio(9 / 16); // Fallback to 9:16
-                    }
-                }
+                const ratio = video.videoHeight / video.videoWidth;
+                setAspectRatio(ratio || 9 / 16); // Update aspect ratio or fallback to 9:16
             };
 
             videoRef.current.addEventListener("loadedmetadata", handleLoadedMetadata);
@@ -76,15 +69,15 @@ const ShortPreview: React.FC<ShortPreviewProps> = (props) => {
                     </div>
                 )}
                 <div className={`absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ${isPlaying ? "hidden" : "flex" }`}>
-                    <div
+                    <button
                         className="bg-primary text-white px-3 py-1 rounded-md flex items-center justify-center"
                         onClick={(e) => {
                             e.stopPropagation();
                             handlePlayPause();
                         }}
                     >
-                        {!isPlaying && <Icon name={Boxicons.Play} customClass="text-4xl" />}
-                    </div>
+                        {!isPlaying && <Icon name={Boxicons.Pause} customClass="text-4xl" />}
+                    </button>
                 </div>
             </div>
         </>

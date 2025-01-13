@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { S3Client, GetObjectCommand, PutObjectCommand,} from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  GetObjectCommand,
+  PutObjectCommand,
+} from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import * as path from 'path';
 import { DirectUploadLinkDto } from '../stream/dto/DirectUploadLink.dto';
@@ -36,58 +40,49 @@ export class R2Service {
     return path.join(dir, `${name}-${suffix}${ext}`);
   }
 
-  async generatePresignedUploadUrl(bucketName: string, objectKey: string, expiresInSeconds: number, contentSize: number, fileType: string): Promise<DirectUploadLinkDto> {
+  // Mock function to generate a presigned upload URL
+  async generatePresignedUploadUrl(
+    bucketName: string,
+    objectKey: string,
+    expiresInSeconds: number,
+    contentSize: number,
+    fileType: string,
+  ): Promise<DirectUploadLinkDto> {
     try {
-        const command = new PutObjectCommand({
-            Bucket: bucketName,
-            Key: objectKey,
-            ContentLength: contentSize,
-            ContentType: fileType,
-        });
-        const presignedUrl = await getSignedUrl(this.s3, command, { expiresIn: expiresInSeconds });
-        const uid = objectKey;
-        const uploadURL = presignedUrl;
-        console.log("Generated pre-signed URL for upload");
-        return { uid, uploadURL }
+      // Mock presigned URL
+      const presignedUrl = `https://mock-presigned-url.com/${bucketName}/${objectKey}`;
+      const uid = objectKey;
+      const uploadURL = presignedUrl;
+      return { uid, uploadURL };
     } catch (error) {
-        console.error('Error generating pre-signed URL:', error);
-        throw new Error('Failed to generate pre-signed URL');
+      throw new Error('Failed to generate mock pre-signed URL');
     }
   }
 
-  async generatePresignedDownloadUrl(bucketName: string, uid: string, expiresInSeconds: number): Promise<string> {
-    if (uid == null || uid == "" || uid == undefined) {
-        return ""
-    }
-
+  // Mock function to generate a presigned download URL
+  async generatePresignedDownloadUrl(
+    bucketName: string,
+    uid: string,
+    expiresInSeconds: number,
+  ): Promise<string> {
     try {
-        const command = new GetObjectCommand({
-            Bucket: bucketName,
-            Key: uid,
-        });
-        console.log("Generating pre-signed download URL for:", uid);
-        return await getSignedUrl(this.s3, command, { expiresIn: expiresInSeconds });
+      // Mock presigned URL
+      const presignedUrl = `https://mock-presigned-url.com/${bucketName}/${uid}`;
+      return presignedUrl;
     } catch (error) {
-        console.error('Error generating pre-signed download URL:', error);
-        throw new Error('Failed to generate pre-signed download URL');
+      throw new Error('Failed to generate mock pre-signed download URL');
     }
   }
 
+  // Mock function to simulate upload
   async upload(bucket: string, key: string, text: string) {
     try {
-        const params = {
-            Bucket: bucket,
-            Key: key, // The key (file name) for the object in R2
-            Body: text,
-            ContentType: "application/json", // Set the content type to JSON
-        };
-
-        // Create and send the PutObjectCommand
-        const command = new PutObjectCommand(params);
-        const response = await this.s3.send(command);
-        console.log("Successfully uploaded JSON to R2:", response);
+      //console.log(`Mock upload to bucket: ${bucket}, key: ${key}, text: ${text}`,);
+      // Simulate successful upload
+      const response = { status: 'success', message: 'Mock upload successful' };
+      //console.log('Successfully uploaded JSON to R2:', response);
     } catch (error) {
-        console.error("Error uploading JSON to R2:", error);
+      console.error('Error uploading JSON to R2:', error);
     }
   }
 }

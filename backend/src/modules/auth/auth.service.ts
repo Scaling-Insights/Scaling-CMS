@@ -22,6 +22,13 @@ export class AuthService {
     user.email = 'Peter@pan.nl';
     user.password = 'peterpan123';
 
+    // const users = await this.usersService.getAllUsers();
+    // //console.log(users.length)
+    // const user = users[0]
+    // if (user?.password !== pass) {
+    //   throw new InvalidLoginCredentialsException();
+    // }
+
     // remove the toSting() method, when the user is fetched from the database!!
     const payload = { sub: user.id.toString(), username: user.username };
     return {

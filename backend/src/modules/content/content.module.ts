@@ -12,11 +12,11 @@ import { AuthModule } from 'src/modules/auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
 import { StreamService } from '../cloudflare/stream/stream.service';
 import { R2Service } from '../cloudflare/r2/r2.service';
+import { MockContentRepository } from './mocks/content.repository.mock';
 
 @Module({
   imports: [
     SnowflakeModule,
-    TypeOrmModule.forFeature([Content]),
     ShortModule,
     TagModule,
     ContentTagModule,
@@ -28,7 +28,12 @@ import { R2Service } from '../cloudflare/r2/r2.service';
     ContentService,
     StreamService,
     R2Service,
+    MockContentRepository,
+    {
+      provide: 'ContentRepository',
+      useClass: MockContentRepository,
+    },
   ],
   exports: [ContentService],
 })
-export class ContentModule { }
+export class ContentModule {}

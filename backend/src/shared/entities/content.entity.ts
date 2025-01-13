@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, PrimaryColumn, ManyToOne } from "typeorm";
-import { User } from "./user.entity";
-import { ContentType } from "../enums/content-type.enum";
-import { PublicationStatus } from "../enums/publication-status.enum";
+import { User } from "src/shared/entities/user.entity";
+import { ContentType } from "src/shared/enums/content-type.enum";
+import { PublicationStatus } from "src/shared/enums/publication-status.enum";
+
 
 
 @Entity()

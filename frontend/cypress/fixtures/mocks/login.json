@@ -1,5 +1,6 @@
 {
     "email": "user@example.com",
-    "password": "password123"
-
+    "password": "password123",
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3MjY1NzM4NTQwNzU4MDc3NDQ5IiwidXNlcm5hbWUiOiJQZXRlcnBhbiIsImlhdCI6MTczMzM4ODg4NCwiZXhwIjoxNzMzNDc1Mjg0fQ.I7OSmLrvUyo6ceJ9wJNL2rY5SwhWUTj96WIxkGmynBo",
+    "status": 200
 }

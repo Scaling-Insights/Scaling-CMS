@@ -2,10 +2,11 @@ import Cookies from "js-cookie";
 
 export function getJWTToken() {
 	let token = Cookies.get("accessToken");
+	// //console.log(token);
 	if (token) {
 		return token;
 	} else {
-		console.error("getJWTToken: No access token found");
+		//console.error("getJWTToken: No access token found");
 		return "";
 	}
 }
@@ -38,6 +39,7 @@ export function getUsernameFromToken() {
 	}
 	return username;
 }
+
 
 export function getUserRoleFromToken() {
 	let role = "";

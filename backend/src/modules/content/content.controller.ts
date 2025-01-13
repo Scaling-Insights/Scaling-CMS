@@ -37,7 +37,6 @@ export class ContentController {
 	): Promise<{ data: { streamUploadUrl: string; shortVideoUid: string; } }> {
 		const userId = BigInt(request['user'].sub);
 		const shortVideoLink = await this.streamService.createDirectUploadLink(userId);
-		console.log('Created direct upload link for stream:', shortVideoLink);
 		return {
 			data: {
 				streamUploadUrl: shortVideoLink.uploadURL,
@@ -57,7 +56,6 @@ export class ContentController {
 			throw new Error('No bucket name is not defined');
 		}
 		const thumbnailUploadLink = await this.r2Service.generatePresignedUploadUrl(this.bucketName, objectKey.toString(), this.linkExpiresIn, body.contentSize, body.fileType);
-		console.log('Created direct upload link for R2');
 		return {
 			data: {
 				r2UploadUrl: thumbnailUploadLink.uploadURL,
@@ -65,6 +63,20 @@ export class ContentController {
 			}
 		}
 	}
+
+	// @UseGuards(AuthGuard)
+	// @Post('request-thumbnail-download-url')
+	// async createDirectGetThumbnailLink(
+	// 	@Req() request: Request,
+	// 	@Body() body: { uid: string }
+	// ): Promise<{ data: { r2DownloadUrl: string } }> {
+	// 	const thumbnailDownloadLink = await this.r2Service.generatePresignedDownloadUrl(this.bucketName, body.uid, this.linkExpiresIn);
+	// 	return {
+	// 		data: {
+	// 			r2DownloadUrl: thumbnailDownloadLink,
+	// 		}
+	// 	}
+	// }
 
 	@UseGuards(AuthGuard)
 	@Post('get-range')
@@ -75,6 +87,7 @@ export class ContentController {
 		if (body.rangeMin == undefined || body.rangeMax == undefined) {
 			body.rangeMin = 0;
 			body.rangeMax = 10;
+			// throw new Error('No range specified');
 		}
 		const userId = BigInt(request['user'].sub);
 
@@ -85,8 +98,6 @@ export class ContentController {
 			body.rangeMin,
 			body.rangeMax,
 		);
-
-		console.log('Fetched content for user: ', userId);
 
 		return {
 			rangeSize,

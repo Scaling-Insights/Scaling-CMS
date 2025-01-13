@@ -16,14 +16,12 @@ import { ContentDto } from 'src/modules/content/dto/content.dto';
 import { GetAllContentDto } from 'src/modules/content/dto/get-all-content.dto';
 import { R2Service } from '../cloudflare/r2/r2.service';
 import { ConfigService } from '@nestjs/config';
-import { IContentService } from './content.service.interface';
-
-
+import { MockContentRepository } from './mocks/content.repository.mock';
 @Injectable()
-export class ContentService implements IContentService {
+export class ContentService {
   constructor(
-    @InjectRepository(Content)
-    private readonly contentRepository: Repository<Content>,
+    @Inject('ContentRepository')
+    private contentRepository: MockContentRepository,
     private readonly snowflakeService: SnowflakeService,
     private readonly shortService: ShortService,
     private readonly tagService: TagService,
@@ -32,9 +30,11 @@ export class ContentService implements IContentService {
     private readonly configService: ConfigService,
   ) { }
 
-  private readonly bucketName = this.configService.get<string>('R2_BUCKET_NAME');
-  private readonly linkExpiresIn = this.configService.get<number>('CLOUDFLARE_EXPIRES_IN');
-
+  private readonly bucketName =
+    this.configService.get<string>('R2_BUCKET_NAME');
+  private readonly linkExpiresIn = this.configService.get<number>(
+    'CLOUDFLARE_EXPIRES_IN',
+  );
 
   validateContent(uploadContentDto: UploadContentDto): void {
     const requiredFields = [
@@ -67,7 +67,7 @@ export class ContentService implements IContentService {
   async getAllContent(
     userId: BigInt,
     rangeMin: number,
-    rangeMax: number
+    rangeMax: number,
   ): Promise<GetAllContentDto> {
     const rangeSize = rangeMax - rangeMin + 1;
 
@@ -94,11 +94,12 @@ export class ContentService implements IContentService {
             );
             if (short) {
               description = short.description || '';
-              thumbnailLink = await this.r2Service.generatePresignedDownloadUrl(
-                this.bucketName,
-                short.thumbnailLink,
-                this.linkExpiresIn
-              ) || '';
+              thumbnailLink =
+                (await this.r2Service.generatePresignedDownloadUrl(
+                  this.bucketName,
+                  short.thumbnailLink,
+                  this.linkExpiresIn,
+                )) || '';
               streamUID = short.streamUID || '';
               videoLength = short.videoLength || 0;
             } else {
@@ -126,7 +127,7 @@ export class ContentService implements IContentService {
         } as ContentDto;
       }),
     );
-    return { contents: contentDtos }
+    return { contents: contentDtos };
   }
 
   async getRangeSize(): Promise<number> {
@@ -140,6 +141,8 @@ export class ContentService implements IContentService {
     this.validateContent(uploadContentDto);
 
     let contentItemID: BigInt;
+
+    //console.log(uploadContentDto);
 
     switch (uploadContentDto.type) {
       case ContentType.SHORT:
@@ -158,16 +161,9 @@ export class ContentService implements IContentService {
     content.type = uploadContentDto.type;
     content.contentItemID = contentItemID;
 
-    console.log('Saving content for user', userId);
-
     await this.contentRepository.save(content);
 
-    console.log('Saved content for user', userId);
-    console.log('Saving tags for user', userId);
-
     await this.handleTags(content.id, uploadContentDto.tags);
-
-    console.log('Saved tags for user', userId);
   }
 
   private async handleTags(contentId: BigInt, tags: string[]): Promise<void> {

@@ -28,9 +28,8 @@ const FileDropInput: React.FC<FileDropInputProps> = (props) => {
         if (file) {
             let acceptedFileTypes = props.acceptedFiles.split(",").map((type) => type.replace(".", "video/"));
 
-
             // Validate file type
-            if (acceptedFileTypes.includes(file.type) || file.type === "video/quicktime" || file.type === "video/x-matroska") {
+            if (acceptedFileTypes.includes(file.type) || file.type === "video/quicktime") {
                 processVideo(file);
             } else {
                 setErrorState(`Ongeldige bestandstype. Alleen ${props.acceptedFiles} zijn toegestaan.`);

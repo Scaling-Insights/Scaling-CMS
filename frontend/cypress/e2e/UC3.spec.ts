@@ -47,11 +47,15 @@ describe('Login Page', () => {
   });
 
   it('should log in successfully with valid credentials', () => {
-    cy.intercept('POST', '/auth/login', {
-      fixture: 'mocks/authLogin.json',
-    }).as('loginRequest');
-    cy.visit('/');
     cy.fixture('mocks/login.json').then((data) => {
+      cy.intercept('POST', '/auth/login', {
+          statusCode: 200,
+          body: {
+              status: data.status,
+              accessToken: data.accessToken,
+          },
+      }).as('loginRequest');
+
       cy.get('input[name="email"]').type(data.email);
       cy.get('input[name="password"]').type(data.password);
       cy.get('#loginButton').click();
