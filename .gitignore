@@ -8,3 +8,5 @@ node_modules/
 /playwright/.cache/
 **/values.yaml
 docker-compose.yaml
+
+.env

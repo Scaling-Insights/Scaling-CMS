@@ -1,7 +1,6 @@
 import React, { MouseEventHandler } from 'react';
 import { ButtonType, ButtonStyle } from "@/enums/ButtonEnum";
 
-
 interface ButtonProps {
     type: ButtonType;
     id: string;
